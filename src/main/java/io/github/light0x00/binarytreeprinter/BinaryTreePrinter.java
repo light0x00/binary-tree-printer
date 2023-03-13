@@ -65,10 +65,13 @@ public class BinaryTreePrinter {
 
         int layerTotal;
 
+        boolean leftSide;
+
         public NodeDecorator(IPrintableBinaryTreeNode node, int layer, int seqInLayer) {
             this.node = node;
             this.layer = layer;
             this.seqInLayer = seqInLayer;
+            this.leftSide = leftSide;
         }
 
         public NodeDecorator(IPrintableBinaryTreeNode node) {
@@ -85,12 +88,26 @@ public class BinaryTreePrinter {
                 //为了排版 将长度不足的节点内容填充空格
                 if (node.text().length() < maxNodeWidth) {
                     int diff = maxNodeWidth - node.text().length();
-                    if (isLeaf()) {
-                        return fill(' ', diff) + node.text();
+                    if ((seqInLayer & 1) == 0) {
+                        /*
+                        当前节点为右节点    没有子节点   右
+                        当前节点为右节点    只有右节点   右
+                        当前节点为右节点    只有左节点   中间
+                        当前节点为右节点    有左右节点   中间
+
+                        当前节点为左节点    没有子节点   左
+                        当前节点为左节点    只有右节点   中间
+                        当前节点为左节点    只有左节点   左
+                        当前节点为左节点    有左右节点   中间
+                        */
+                        if (!hasLeft()) {
+                            return fill(' ', diff) + node.text();
+                        }
                     } else {
-                        int paddingLeft = diff / 2 + ((diff & 1) == 0 ? 0 : 1);
-                        return fill(' ', paddingLeft) + node.text() + fill(' ', diff - paddingLeft);
+                        if (!hasRight())
+                            return node.text() + fill(' ', diff);
                     }
+                    return fill(' ', diff / 2) + node.text() + fill(' ', (diff & 1) == 0 ? diff / 2 : diff / 2 + 1);
                 }
             }
             return node.text();
@@ -141,10 +158,9 @@ public class BinaryTreePrinter {
         public int branchGapWidth() {
             return maxNodeWidth;
         }
-
     }
 
-    static void printFuck(NodeDecorator head) {
+    static void printTieLine(NodeDecorator head) {
         for (NodeDecorator cur = head; cur != null; cur = cur.nextSibling) {
             Integer branchWidth = cur.branchWidth();
             print(" ", branchWidth);
@@ -223,7 +239,7 @@ public class BinaryTreePrinter {
         while (!queue.isEmpty()) {
             IPrintableBinaryTreeNode node = queue.removeFirst();
             if (node == LAYER_MARK) {
-                printFuck(head);
+                printTieLine(head);
                 if (queue.isEmpty()) { //如果层级节点后面没有追加新的节点，说明树的最后一层已经遍历完。
                     break;
                 }

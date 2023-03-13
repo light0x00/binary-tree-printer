@@ -29,3 +29,16 @@ class BinaryTreeNode implements IPrintableBinaryTreeNode {
 BinaryTreeNode tree=buildTree();
 BinaryTreePrinter.print(tree);
 ```
+it will output the tree in ascii format:
+
+```txt
+      1       
+     /  \     
+    /    \    
+   /      \   
+  /        \  
+  2       33  
+ /  \    /  \ 
+/    \  /    \
+4    4  6    7
+```

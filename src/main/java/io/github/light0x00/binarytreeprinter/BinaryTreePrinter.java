@@ -38,6 +38,10 @@ public class BinaryTreePrinter {
         }
     }
 
+    public static void main(String[] args) {
+        System.out.println("\n".length());
+    }
+
     static String fill(char chr, int len) {
         char[] padding = new char[len];
         Arrays.fill(padding, ' ');
@@ -65,13 +69,10 @@ public class BinaryTreePrinter {
 
         int layerTotal;
 
-        boolean leftSide;
-
         public NodeDecorator(IPrintableBinaryTreeNode node, int layer, int seqInLayer) {
             this.node = node;
             this.layer = layer;
             this.seqInLayer = seqInLayer;
-            this.leftSide = leftSide;
         }
 
         public NodeDecorator(IPrintableBinaryTreeNode node) {
@@ -123,6 +124,11 @@ public class BinaryTreePrinter {
             return node.right();
         }
 
+        @Override
+        public String desc() {
+            return node.desc();
+        }
+
         public boolean hasLeft() {
             return left() != null;
         }
@@ -161,16 +167,27 @@ public class BinaryTreePrinter {
     }
 
     static void printTieLine(NodeDecorator head) {
+        boolean hasDesc = false;
         for (NodeDecorator cur = head; cur != null; cur = cur.nextSibling) {
-            Integer branchWidth = cur.branchWidth();
-            print(" ", branchWidth);
-            print(cur.text());
-            print(" ", branchWidth);
+            int branchWidth = cur.branchWidth();
+            if (cur.isNullNode()) {
+                print(" ", branchWidth * 2 + cur.maxNodeWidth);
+            } else {
+                print(" ", branchWidth);
+                printC(cur.text());
+                print(" ", branchWidth);
+            }
             if (!cur.isTail()) {
                 print(" ", cur.branchGapWidth());
             }
+            if (cur.desc() != null) {
+                hasDesc = true;
+            }
         }
         System.out.println();
+        if (hasDesc) {
+            shit(head);
+        }
         if (head.layer == 1) {
             return;
         }
@@ -189,14 +206,47 @@ public class BinaryTreePrinter {
         }
     }
 
-    static void print(String chr) {
+    private static void shit(NodeDecorator head) {
+        for (NodeDecorator cur = head; cur != null; cur = cur.nextSibling) {
+            int branchWidth = cur.branchWidth();
+            String desc = cur.desc() == null ? "" : cur.desc();
+
+            int maxWidth = branchWidth * 2 + cur.maxNodeWidth;
+
+            if (desc.length() > maxWidth) {
+//                print(desc.substring(0, maxWidth));
+                print(desc);
+            } else {
+                int diff = maxWidth - desc.length();
+                int leftPadding = diff / 2;
+                int rightPadding = diff - leftPadding;
+                print(" ", leftPadding);
+                print(desc);
+                print(" ", rightPadding);
+            }
+            if (!cur.isTail()) {
+                print(" ", cur.branchGapWidth());
+            }
+        }
+        System.out.println();
+    }
+
+    private static void print(String chr) {
         print(chr, 1);
     }
 
-    static void print(String chr, int num) {
+    private static void print(String chr, int num) {
         for (int i = 0; i < num; i++) {
             System.out.print(chr);
         }
+    }
+
+    private static void printC(String text) {
+        printC(text, 1);
+    }
+
+    private static void printC(String text, int num) {
+        print("\033[0;107m\033[1;34m" + text + "\u001B[0m", num);
     }
 
     static class NodeDecoratorFactory {
@@ -221,12 +271,16 @@ public class BinaryTreePrinter {
     }
 
     public static void print(IPrintableBinaryTreeNode root) {
+        //2. 确定最大字符长度
+        int maxNodeTextLength = measureMaxTextLen(root);
+        print(root, maxNodeTextLength);
+    }
+
+    public static void print(IPrintableBinaryTreeNode root, int maxNodeTextLength) {
         //1. 测量树层数
         int layerTotal = measureTreeLayerNum(root);
-        //2. 确定最大字符长度
-        int maxTextLen = measureMaxTextLen(root);
 
-        NodeDecoratorFactory nodeDecoratorFactory = new NodeDecoratorFactory(layerTotal, maxTextLen);
+        NodeDecoratorFactory nodeDecoratorFactory = new NodeDecoratorFactory(layerTotal, maxNodeTextLength);
 
         LinkedList<IPrintableBinaryTreeNode> queue = new LinkedList<>();
         queue.addLast(root);

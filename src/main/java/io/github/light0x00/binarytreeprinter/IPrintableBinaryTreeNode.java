@@ -12,4 +12,7 @@ public interface IPrintableBinaryTreeNode {
 
     IPrintableBinaryTreeNode right();
 
+    default String desc() {
+        return null;
+    }
 }

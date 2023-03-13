@@ -19,6 +19,7 @@ public class BinaryTreePrinterTest {
         }
 
         private Object val;
+        private String desc;
         private BinaryTreeNode left;
         private BinaryTreeNode right;
 
@@ -35,6 +36,11 @@ public class BinaryTreePrinterTest {
         @Override
         public BinaryTreeNode right() {
             return right;
+        }
+
+        @Override
+        public String desc() {
+            return "TEST desc";
         }
     }
 
@@ -63,7 +69,7 @@ public class BinaryTreePrinterTest {
     @Test
     public void test0() {
         BinaryTreeNode tree = buildTree();
-        BinaryTreePrinter.print(tree);
+        BinaryTreePrinter.print(tree,10);
     }
 
 

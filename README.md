@@ -1,4 +1,4 @@
-![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.light0x00/binary-tree-printer/badge.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.light0x00/binary-tree-printer/badge.svg)](https://repo1.maven.org/maven2/io/github/light0x00/binary-tree-printer/)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -9,7 +9,7 @@
 <dependency>
     <groupId>io.github.light0x00</groupId>
     <artifactId>binary-tree-printer</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -29,7 +29,7 @@ class BinaryTreeNode implements IPrintableBinaryTreeNode {
 BinaryTreeNode tree=buildTree();
 BinaryTreePrinter.print(tree);
 ```
-it will output the tree in ascii format:
+it will output the tree as ascii format:
 
 ```txt
       1       

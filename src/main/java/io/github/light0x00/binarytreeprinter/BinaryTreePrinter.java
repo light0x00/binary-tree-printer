@@ -38,10 +38,6 @@ public class BinaryTreePrinter {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println("\n".length());
-    }
-
     static String fill(char chr, int len) {
         char[] padding = new char[len];
         Arrays.fill(padding, ' ');
